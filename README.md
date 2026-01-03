@@ -178,3 +178,4 @@ This project is open source and available under the MIT License.
 ---
 
 **Created for:** React.js Web Assignment - Employee Management Dashboard
+# employee-management-dashboard
