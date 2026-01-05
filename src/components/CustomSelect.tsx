@@ -38,7 +38,7 @@ export default function CustomSelect({
     return (
         <div className="w-full" ref={dropdownRef}>
             {label && (
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                     {label}
                 </label>
             )}
@@ -64,7 +64,7 @@ export default function CustomSelect({
                 </button>
 
                 {isOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-purple-200 rounded-lg shadow-lg z-50">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-purple-200 rounded-lg  z-50">
                         {options.length === 0 ? (
                             <div className="px-4 py-2 text-gray-500 text-sm">No options available</div>
                         ) : (

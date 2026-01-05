@@ -1,7 +1,10 @@
-import { useState } from "react";
+// src/hooks/useEmployeeStore.ts
+import { useState, useCallback } from "react";
 import { Employee } from "../types";
 
 const STORAGE_KEY = "employees";
+const STORAGE_VERSION = "v1.0.0";
+const STORAGE_VERSION_KEY = "employees_version";
 
 const initialEmployees: Employee[] = [
   {
@@ -38,14 +41,28 @@ const initialEmployees: Employee[] = [
     position: "Sales Executive",
     joinDate: "2022-03-10",
     salary: 65000,
-    status: "Active",
+    status: "Inactive",
   },
 ];
 
 export const useEmployeeStore = () => {
   const [employees, setEmployees] = useState<Employee[]>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : initialEmployees;
+    try {
+      const storedVersion = localStorage.getItem(STORAGE_VERSION_KEY);
+      const stored = localStorage.getItem(STORAGE_KEY);
+
+      // Only reset if version changed
+      if (storedVersion !== STORAGE_VERSION || !stored) {
+        localStorage.setItem(STORAGE_VERSION_KEY, STORAGE_VERSION);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialEmployees));
+        return initialEmployees;
+      }
+
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed : initialEmployees;
+    } catch {
+      return initialEmployees;
+    }
   });
 
   const saveEmployees = (data: Employee[]) => {
@@ -54,40 +71,43 @@ export const useEmployeeStore = () => {
   };
 
   const addEmployee = (employee: Omit<Employee, "id">) => {
-    const newEmployee: Employee = {
-      ...employee,
-      id: Date.now().toString(),
-    };
+    const newEmployee: Employee = { ...employee, id: crypto.randomUUID() };
     saveEmployees([...employees, newEmployee]);
     return newEmployee;
   };
 
-  const updateEmployee = (id: string, employee: Omit<Employee, "id">) => {
+  const updateEmployee = (id: string, updates: Partial<Employee>) => {
     const updated = employees.map((emp) =>
-      emp.id === id ? { ...emp, ...employee } : emp
+      emp.id === id ? { ...emp, ...updates } : emp
     );
     saveEmployees(updated);
   };
 
   const deleteEmployee = (id: string) => {
     const filtered = employees.filter((emp) => emp.id !== id);
-    saveEmployees(filtered);
+    setEmployees(filtered); // update state
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered)); // update localStorage
+    return filtered; // return updated list immediately if needed
   };
 
-  const getEmployee = (id: string) => {
-    return employees.find((emp) => emp.id === id);
-  };
+  const getEmployee = useCallback(
+    (id: string) => employees.find((emp) => emp.id === id),
+    [employees]
+  );
 
-  const searchEmployees = (query: string) => {
-    const lowercaseQuery = query.toLowerCase();
-    return employees.filter(
-      (emp) =>
-        emp.firstName.toLowerCase().includes(lowercaseQuery) ||
-        emp.lastName.toLowerCase().includes(lowercaseQuery) ||
-        emp.email.toLowerCase().includes(lowercaseQuery) ||
-        emp.department.toLowerCase().includes(lowercaseQuery)
-    );
-  };
+  const searchEmployees = useCallback(
+    (query: string) => {
+      const q = query.toLowerCase();
+      return employees.filter(
+        (emp) =>
+          emp.firstName.toLowerCase().includes(q) ||
+          emp.lastName.toLowerCase().includes(q) ||
+          emp.email.toLowerCase().includes(q) ||
+          emp.department.toLowerCase().includes(q)
+      );
+    },
+    [employees]
+  );
 
   return {
     employees,

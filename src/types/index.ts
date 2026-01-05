@@ -9,4 +9,5 @@ export interface Employee {
   joinDate: string;
   salary: number;
   status: "Active" | "Inactive";
+  avatar?: string | null;
 }
