@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 
 export default function Dashboard() {
-    const { employees, deleteEmployee, searchEmployees } = useEmployeeStore()
+    const { employees, searchEmployees } = useEmployeeStore()
     const [searchTerm, setSearchTerm] = useState('')
     const [filterDepartment, setFilterDepartment] = useState('')
     const [filterStatus, setFilterStatus] = useState('')
@@ -118,7 +118,6 @@ export default function Dashboard() {
             ) : (
                 <EmployeeTable
                     employees={filteredEmployees}
-                    onDelete={deleteEmployee}
                 />
             )}
         </div>
