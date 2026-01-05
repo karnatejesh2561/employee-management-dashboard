@@ -12,8 +12,6 @@ export default function ActionDropdown({ employee, onDelete }: ActionDropdownPro
     const [isOpen, setIsOpen] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
     const buttonRef = useRef<HTMLButtonElement>(null)
-    const [position, setPosition] = useState({ top: 0, left: 0 })
-
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -26,21 +24,12 @@ export default function ActionDropdown({ employee, onDelete }: ActionDropdownPro
     }, [])
 
     const handleButtonClick = () => {
-        if (!isOpen && buttonRef.current) {
-            const rect = buttonRef.current.getBoundingClientRect()
-            setPosition({
-                top: rect.bottom + 8,
-                left: rect.left - 180
-            })
-        }
         setIsOpen(!isOpen)
     }
 
     const handleDelete = () => {
-        if (window.confirm('Are you sure you want to delete this employee?')) {
-            onDelete(employee.id)
-            setIsOpen(false)
-        }
+        onDelete(employee.id)
+        setIsOpen(false)
     }
 
     return (

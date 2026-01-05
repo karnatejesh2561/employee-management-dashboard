@@ -1,4 +1,5 @@
-// src/components/EmployeeTable.tsx
+import { useState } from "react";
+import ConfirmModal from "./ConfirmModal";
 import { Employee } from "../types";
 import ActionDropdown from "./ActionDropdown";
 import AvatarDisplay from "./AvatarDisplay";
@@ -10,10 +11,24 @@ interface EmployeeTableProps {
 
 export default function EmployeeTable({ employees }: EmployeeTableProps) {
     const { updateEmployee, deleteEmployee } = useEmployeeStore();
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [employeeToDelete, setEmployeeToDelete] = useState<string | null>(null);
 
     const handleToggleStatus = (employee: Employee) => {
         const newStatus = employee.status === "Active" ? "Inactive" : "Active";
         updateEmployee(employee.id, { status: newStatus });
+    };
+
+    const confirmDelete = (id: string) => {
+        setEmployeeToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDelete = () => {
+        if (employeeToDelete) {
+            deleteEmployee(employeeToDelete);
+            setEmployeeToDelete(null);
+        }
     };
 
     return (
@@ -63,7 +78,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
                                 </td>
 
                                 <td className="px-6 py-4 text-sm text-right relative">
-                                    <ActionDropdown employee={emp} onDelete={() => deleteEmployee(emp.id)} />
+                                    <ActionDropdown employee={emp} onDelete={confirmDelete} />
                                 </td>
                             </tr>
                         ))}
@@ -82,7 +97,7 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
                                 <p className="text-sm text-gray-600 mt-1">{emp.email}</p>
                             </div>
                             <div className="relative">
-                                <ActionDropdown employee={emp} onDelete={() => deleteEmployee(emp.id)} />
+                                <ActionDropdown employee={emp} onDelete={confirmDelete} />
                             </div>
                         </div>
 
@@ -115,6 +130,16 @@ export default function EmployeeTable({ employees }: EmployeeTableProps) {
                     </div>
                 ))}
             </div>
+
+            <ConfirmModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                title="Delete Employee"
+                message="Are you sure you want to delete this employee? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+            />
         </>
     );
 }
