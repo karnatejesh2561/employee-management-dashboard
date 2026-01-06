@@ -1,6 +1,6 @@
 # Employee Management Dashboard
 
-A modern, fully-featured Employee Management Dashboard built with React, TypeScript, Vite, and Tailwind CSS.
+A modern, fully-featured Employee Management Dashboard built with React, TypeScript, and Tailwind CSS.
 
 ## Features
 
@@ -34,7 +34,7 @@ A modern, fully-featured Employee Management Dashboard built with React, TypeScr
 
 - **React 18.2** - UI framework
 - **TypeScript** - Type safety
-- **Vite** - Build tool & dev server
+- **Create React App** - Local development and build structure
 - **React Router** - Client-side routing
 - **Tailwind CSS** - Utility-first CSS framework
 - **PostCSS** - CSS processing
@@ -56,7 +56,7 @@ src/
 ├── types/              # TypeScript type definitions
 │   └── index.ts        # Employee interface
 ├── App.tsx            # Main app component with routing
-├── main.tsx           # Entry point
+├── index.tsx           # Entry point
 └── index.css          # Global styles with Tailwind
 ```
 
@@ -78,10 +78,10 @@ src/
 Start the development server:
 
 ```bash
-npm run dev
+npm start
 ```
 
-The application will open in your browser at `http://localhost:5173`
+The application will open in your browser at `http://localhost:3000`
 
 ## Build for Production
 
@@ -89,7 +89,7 @@ The application will open in your browser at `http://localhost:5173`
 npm run build
 ```
 
-This creates an optimized production build in the `dist/` directory.
+This creates an optimized production build in the `build/` directory.
 
 ## Features in Detail
 
@@ -178,4 +178,3 @@ This project is open source and available under the MIT License.
 ---
 
 **Created for:** React.js Web Assignment - Employee Management Dashboard
-# employee-management-dashboard
